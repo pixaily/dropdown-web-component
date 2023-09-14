@@ -38,7 +38,11 @@ export class MyElement extends LitElement {
 	render() {
 		return html`
 			<h1>Hello, ${this.name}</h1>
-			<custom-dropdown triggerType="button" buttonLabel='Custom Dropdown' .items=${this.users}></custom-dropdown>
+			<custom-dropdown
+				trigger-type='button'
+				button-label='Custom Dropdown'
+				.items=${this.users}>
+			</custom-dropdown>
 			`;
 	}
 }

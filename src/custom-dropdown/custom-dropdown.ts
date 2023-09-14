@@ -5,10 +5,10 @@ import './custom-dropdown-item.ts';
 
 @customElement('custom-dropdown')
 class CustomDropdown extends LitElement {
-  @property()
+  @property({ attribute: 'button-label' })
   buttonLabel = 'Dropdown';
 
-  @property()
+  @property({ attribute: 'trigger-type' })
   triggerType = 'button';
 
   @property({ type: Array })
@@ -16,13 +16,25 @@ class CustomDropdown extends LitElement {
 
   @state()
   private _isExpanded = false;
+  
+  private _refCloseDropdown = this._closeDropdown.bind(this);
+
+  protected updated(_changedProperties: Map<string | number | symbol, unknown>): void {
+    if (_changedProperties.has('_isExpanded')) {
+      if (this._isExpanded) {
+        document.addEventListener('click', this._refCloseDropdown);
+      } else {
+        document.removeEventListener('click', this._refCloseDropdown);
+      }
+    } 
+  }
 
   render() {
     return html`
-    <div id="custom-dropdown">
+    <div class="custom-dropdown-wrapper" ref(dropdownWrapper)>
       ${this.triggerType === 'link'
           ? html`<a href="#" role="button" aria-expanded="${this._isExpanded}" @click="${this._toggleDropdownHandler}">${this.buttonLabel}</a>`
-          : html`<button type='button' aria-expanded="${this._isExpanded}" @click="${this._toggleDropdownHandler}">${this.buttonLabel}</button>`
+          : html`<button type=${this.triggerType} aria-expanded="${this._isExpanded}" @click="${this._toggleDropdownHandler}">${this.buttonLabel}</button>`
       }
       <ul ?hidden=${!this._isExpanded} @click=${this._clickItemHandler}>
         ${this.items.map((item: User) => {
@@ -38,15 +50,8 @@ class CustomDropdown extends LitElement {
   private _toggleDropdownHandler(e: Event) : void {
     e.preventDefault();
     e.stopPropagation();
-    
+
     this._isExpanded = !this._isExpanded;
-    
-    const ref = this._closeDropdown.bind(this);
-    if (this._isExpanded) {
-      document.addEventListener('click', ref);
-    } else {
-      document.removeEventListener('click', ref);
-    }
   }
   
   private _closeDropdown(e: Event) {
@@ -72,7 +77,7 @@ class CustomDropdown extends LitElement {
       this.items[currentItemIdx].selected = !this.items[currentItemIdx].selected
     }
 
-    this.requestUpdate();
+    this.requestUpdate('items');
   }
 }
 
