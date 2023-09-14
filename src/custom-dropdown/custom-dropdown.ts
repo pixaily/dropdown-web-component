@@ -19,6 +19,19 @@ class CustomDropdown extends LitElement {
   
   private _refCloseDropdown = this._closeDropdown.bind(this);
 
+  willUpdate(_changedProperties: Map<string | number | symbol, unknown>): void {
+
+    if (_changedProperties.has('buttonLabel') && this.buttonLabel.length < 1) {
+      this.buttonLabel = 'Dropdown'
+    }
+
+    if (_changedProperties.has('triggerType')) {
+      if (this.triggerType !== 'link') {
+        this.triggerType = 'button'
+      }
+    }
+  }
+  
   protected updated(_changedProperties: Map<string | number | symbol, unknown>): void {
     if (_changedProperties.has('_isExpanded')) {
       if (this._isExpanded) {
