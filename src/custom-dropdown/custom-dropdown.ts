@@ -76,8 +76,6 @@ class CustomDropdown extends LitElement {
   private _refCloseDropdown = this._closeDropdown.bind(this);
 
   render() {
-
-  console.log(resetCSS.cssText);
     return html`
     <div class=${classMap(this._classesWrapper)} direction=${this.direction}>
       ${this.triggerType === 'link'

@@ -46,6 +46,44 @@ export class MyElement extends LitElement {
 		selected: false
 	}]
 
+	private users1: User[] = [{
+		id: '123adsa2',
+		name: 'John',
+		age: 23,
+		selected: false
+	},
+	{
+		id: '213adsa2',
+		name: 'Jack',
+		age: 32,
+		selected: false
+	},
+	{
+		id: '312adsa2',
+		name: 'Jimmy',
+		age: 28,
+		selected: false
+	}]
+
+	private users2: User[] = [{
+		id: '123adsa3',
+		name: 'John',
+		age: 23,
+		selected: false
+	},
+	{
+		id: '213adsa3',
+		name: 'Jack',
+		age: 32,
+		selected: false
+	},
+	{
+		id: '312adsa3',
+		name: 'Jimmy',
+		age: 28,
+		selected: false
+	}]
+
 	render() {
 		return html`
 			<h1>Hello, ${this.name}</h1>
@@ -62,11 +100,11 @@ export class MyElement extends LitElement {
 					trigger-type="link"
 					direction="right"
 					button-label="Dropdown link"
-					.items=${this.users}>
+					.items=${this.users1}>
 				</custom-dropdown>
 				<custom-dropdown
 					direction=""
-					.items=${this.users}>
+					.items=${this.users2}>
 				</custom-dropdown>
 			</div>
 			`;
