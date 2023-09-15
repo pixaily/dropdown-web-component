@@ -40,7 +40,15 @@ export class MyElement extends LitElement {
 			<h1>Hello, ${this.name}</h1>
 			<custom-dropdown
 				trigger-type='button'
-				button-label='Custom Dropdown'
+				button-label='Dropdown Button'
+				.items=${this.users}>
+			</custom-dropdown>
+			<custom-dropdown
+				trigger-type='link'
+				button-label='Dropdown link'
+				.items=${this.users}>
+			</custom-dropdown>
+			<custom-dropdown
 				.items=${this.users}>
 			</custom-dropdown>
 			`;

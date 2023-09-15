@@ -1,6 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import { ref, createRef } from 'lit/directives/ref.js';
+
 import './custom-dropdown-item.ts';
 
 @customElement('custom-dropdown')
@@ -9,7 +11,7 @@ class CustomDropdown extends LitElement {
   buttonLabel = 'Dropdown';
 
   @property({ attribute: 'trigger-type' })
-  triggerType = 'button';
+  triggerType: 'button' | 'link' = 'button';
 
   @property({ type: Array })
   items: User[] = [];
@@ -18,6 +20,58 @@ class CustomDropdown extends LitElement {
   private _isExpanded = false;
   
   private _refCloseDropdown = this._closeDropdown.bind(this);
+
+  render() {
+    return html`
+    <div class="custom-dropdown-wrapper test">
+      ${this.triggerType === 'link'
+          ? html`<a href="#" role="button" aria-expanded="${this._isExpanded}" @click="${this._toggleDropdownHandler}">${this.buttonLabel}</a>`
+          : html`<button type=${this.triggerType} aria-expanded="${this._isExpanded}" @click="${this._toggleDropdownHandler}">${this.buttonLabel}</button>`
+      }
+      <ul ?hidden=${!this._isExpanded} @click=${this._clickItemHandler}>
+        ${this.items.map((item: User) => {
+          return html`
+            <custom-dropdown-item key=${item.id} customValue='${item.id}' .selected=${item.selected}>${item.name} ${item.age}</custom-dropdown-item>
+          `
+        })}
+      </ul>
+    </div>
+    `;
+  }
+  
+  private _toggleDropdownHandler(e: Event) : void {
+    e.preventDefault();
+
+    this._isExpanded = !this._isExpanded;
+  }
+  
+  private _closeDropdown(e: Event) {
+    const eventPath = e.composedPath();
+
+    if(!eventPath.includes(this.renderRoot)) {
+      this._isExpanded = false;
+    }
+  }
+
+  private _clickItemHandler(e: Event): void {
+    const id = (e.target as Element).getAttribute('key');
+
+    this.items.forEach((item: User) => {
+      if (item.id !== id) {
+        item.selected = false;
+      }
+    })
+    const currentItemIdx = this.items.findIndex((item: User) => item.id === id);
+
+    if (currentItemIdx != -1) {
+      this.items[currentItemIdx].selected = !this.items[currentItemIdx].selected
+    }
+
+    // Close after selecting
+    // this._isExpanded = false;
+
+    this.requestUpdate('items');
+  }
 
   willUpdate(_changedProperties: Map<string | number | symbol, unknown>): void {
 
@@ -40,57 +94,6 @@ class CustomDropdown extends LitElement {
         document.removeEventListener('click', this._refCloseDropdown);
       }
     } 
-  }
-
-  render() {
-    return html`
-    <div class="custom-dropdown-wrapper" ref(dropdownWrapper)>
-      ${this.triggerType === 'link'
-          ? html`<a href="#" role="button" aria-expanded="${this._isExpanded}" @click="${this._toggleDropdownHandler}">${this.buttonLabel}</a>`
-          : html`<button type=${this.triggerType} aria-expanded="${this._isExpanded}" @click="${this._toggleDropdownHandler}">${this.buttonLabel}</button>`
-      }
-      <ul ?hidden=${!this._isExpanded} @click=${this._clickItemHandler}>
-        ${this.items.map((item: User) => {
-          return html`
-            <custom-dropdown-item key=${item.id} customValue='${item.id}' .selected=${item.selected}>${item.name} ${item.age}</custom-dropdown-item>
-          `
-        })}
-      </ul>
-    </div>
-    `;
-  }
-  
-  private _toggleDropdownHandler(e: Event) : void {
-    e.preventDefault();
-    e.stopPropagation();
-
-    this._isExpanded = !this._isExpanded;
-  }
-  
-  private _closeDropdown(e: Event) {
-    const target = e.target as Element;
-    
-    if (!target.closest('#custom-dropdown')) {
-      this._isExpanded = false;
-    }
-  }
-
-  private _clickItemHandler(e: Event): void {
-    e.stopPropagation();
-    const id = (e.target as Element).getAttribute('key');
-
-    this.items.forEach((item: User) => {
-      if (item.id !== id) {
-        item.selected = false;
-      }
-    })
-    const currentItemIdx = this.items.findIndex((item: User) => item.id === id);
-
-    if (currentItemIdx != -1) {
-      this.items[currentItemIdx].selected = !this.items[currentItemIdx].selected
-    }
-
-    this.requestUpdate('items');
   }
 }
 
