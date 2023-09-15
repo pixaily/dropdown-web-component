@@ -11,6 +11,17 @@ export class MyElement extends LitElement {
 			:host {
 				display: block;
 			}
+			.custom-dropdowns {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.custom-dropdown-right {
+				align-self: flex-end;
+			}
+			.custom-dropdown-left {
+				align-self: flex-start;
+			}
 		`
 	];
 
@@ -38,19 +49,26 @@ export class MyElement extends LitElement {
 	render() {
 		return html`
 			<h1>Hello, ${this.name}</h1>
-			<custom-dropdown
-				trigger-type='button'
-				button-label='Dropdown Button'
-				.items=${this.users}>
-			</custom-dropdown>
-			<custom-dropdown
-				trigger-type='link'
-				button-label='Dropdown link'
-				.items=${this.users}>
-			</custom-dropdown>
-			<custom-dropdown
-				.items=${this.users}>
-			</custom-dropdown>
+			<div class="custom-dropdowns">
+				<custom-dropdown
+					class="custom-dropdown-right"
+					trigger-type="button"
+					button-label="Dropdown Button"
+					direction="left"
+					.items=${this.users}>
+				</custom-dropdown>
+				<custom-dropdown
+					class="custom-dropdown-left"
+					trigger-type="link"
+					direction="right"
+					button-label="Dropdown link"
+					.items=${this.users}>
+				</custom-dropdown>
+				<custom-dropdown
+					direction=""
+					.items=${this.users}>
+				</custom-dropdown>
+			</div>
 			`;
 	}
 }

@@ -11,11 +11,12 @@ class CustomDropdownItem extends LitElement {
   static styles = css`
   .custom-dropdown-item { 
     border-bottom: 1px solid black;
-    padding: 10px 0;
+    padding: 10px;
   }
   .active {
     font-weight: bold;
-  }`
+  }
+  `
 
   @property({ type: Boolean })
   selected = false;
